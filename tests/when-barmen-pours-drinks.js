@@ -67,11 +67,9 @@ suite('When barmen pours drinks', function () {
         test('sms that cupboard is locked is sent to boss', function () {
             let barmen = new Barmen(lockedCupboard, smsService);
 
-
-            try {
+            runSafely(() => {
                 barmen.pour('whisky', 100, visitor, calendar);
-            } catch (e) {
-            }
+            });
 
             assert.equal('Cupboard is locked and I have no key', smsService.lastMessage);
         });
@@ -88,3 +86,11 @@ suite('When barmen pours drinks', function () {
     });
 
 });
+
+function runSafely(action) {
+    try {
+        action()
+    } catch (e) {
+
+    }
+}
