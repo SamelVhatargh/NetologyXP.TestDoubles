@@ -30,6 +30,9 @@ class Cupboard {
 
         return volume;
     }
+    getDrinkAmount(drinkName) {
+        return 1000;
+    }
 }
 
 module.exports = Cupboard;

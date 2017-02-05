@@ -13,6 +13,9 @@ class Barmen {
         }
 
         if (!this._cupboard.hasDrink(drinkName, volume)) {
+            if (this._cupboard.getDrinkAmount(drinkName) === 0) {
+                this._smsService.send('We need more ' + drinkName);
+            }
             throw new Error('Sorry. Not enough ' + drinkName);
         }
 

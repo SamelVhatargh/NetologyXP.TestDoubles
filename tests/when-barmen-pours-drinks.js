@@ -75,6 +75,25 @@ suite('When barmen pours drinks', function () {
         });
     });
 
+    suite('cupboard is out of whisky', function () {
+        let cupboardWithoutWhisky = {};
+        setup(function () {
+            cupboardWithoutWhisky = new CupboardStub();
+            cupboardWithoutWhisky.setDrinkAmount('whisky', 0);
+        });
+
+        test('sms that cupboard is locked is sent to boss', function () {
+            let barmen = new Barmen(cupboardWithoutWhisky, smsService);
+
+            runSafely(() => {
+                barmen.pour('whisky', 100, visitor, calendar);
+            });
+
+            assert.equal('We need more whisky', smsService.lastMessage);
+        });
+    });
+
+
     suite('cupboard is empty', function () {
         test('barmen rejects for a drink', function () {
 
