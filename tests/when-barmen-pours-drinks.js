@@ -5,22 +5,30 @@ var Barmen = require('../src/barmen');
 var Visitor = require('../src/visitor');
 var Cupboard = require('../src/cupboard');
 var CalendarStub = require('./fakes/calendar-stub');
+var CupboardStub = require('./fakes/cupboard-stub');
 var VisitorMock = require('./fakes/visitor-mock');
+var SmsServiceMock = require('./fakes/sms-service-mock');
 
 suite('When barmen pours drinks', function () {
     let visitor = {};
     let barmen = {};
-    let cupboard = {};
     let calendar = {};
+    let smsService = {};
 
     setup(function () {
-        cupboard = new Cupboard();
         calendar = new CalendarStub();
+        smsService = new SmsServiceMock();
         visitor = new Visitor();
         visitor.sober();
     });
 
     suite('cupboard is full', function () {
+        let fullCupboard = {};
+
+        setup(function () {
+            fullCupboard = new CupboardStub();
+        });
+
         test('barmen pours 200 milliliters of whisky in my glass', function () {
 
         });
@@ -32,7 +40,7 @@ suite('When barmen pours drinks', function () {
         test('barmen pours x3 volume on my birthday', function () {
             visitor.birthday = new Date(1757, 3, 3);
             calendar.today = visitor.birthday;
-            let barmen = new Barmen(cupboard);
+            let barmen = new Barmen(fullCupboard, smsService);
 
             let volumeInGlass = barmen.pour('whisky', 100, visitor, calendar);
 
@@ -40,12 +48,32 @@ suite('When barmen pours drinks', function () {
         });
 
         test('I receive a check', function () {
-            let barmen = new Barmen(cupboard);
+            let barmen = new Barmen(fullCupboard, smsService);
             let visitor = new VisitorMock();
 
             barmen.pour('whisky', 100, visitor, calendar);
 
             assert.equal('whisky - 100', visitor.check);
+        });
+    });
+
+    suite('cupboard is locked', function () {
+        let lockedCupboard = {};
+        setup(function () {
+            lockedCupboard = new CupboardStub();
+            lockedCupboard.locked = true;
+        });
+
+        test('sms that cupboard is locked is sent to boss', function () {
+            let barmen = new Barmen(lockedCupboard, smsService);
+
+
+            try {
+                barmen.pour('whisky', 100, visitor, calendar);
+            } catch (e) {
+            }
+
+            assert.equal('Cupboard is locked and I have no key', smsService.lastMessage);
         });
     });
 
