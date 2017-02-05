@@ -1,3 +1,5 @@
+'use strict';
+
 class Visitor {
     constructor() {
         this.totalDrinkVolume = 0;
