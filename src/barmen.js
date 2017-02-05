@@ -17,6 +17,8 @@ class Barmen {
             }
         }
 
+        visitor.check = drinkName + ' - ' + volume;
+
         return this._cupboard.getDrink(drinkName, volume);
     }
 }

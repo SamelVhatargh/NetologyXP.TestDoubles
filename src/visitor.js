@@ -6,6 +6,10 @@ class Visitor {
         this._birthday = null;
     }
 
+    set check(value) {
+        this._check = value;
+    }
+
     drink(volume) {
         this.totalDrinkVolume += volume;
         return volume;

@@ -5,6 +5,7 @@ var Barmen = require('../src/barmen');
 var Visitor = require('../src/visitor');
 var Cupboard = require('../src/cupboard');
 var CalendarStub = require('./fakes/calendar-stub');
+var VisitorMock = require('./fakes/visitor-mock');
 
 suite('When barmen pours drinks', function () {
     let visitor = {};
@@ -38,6 +39,14 @@ suite('When barmen pours drinks', function () {
             assert.equal(3 * 100, volumeInGlass);
         });
 
+        test('I receive a check', function () {
+            let barmen = new Barmen(cupboard);
+            let visitor = new VisitorMock();
+
+            barmen.pour('whisky', 100, visitor, calendar);
+
+            assert.equal('whisky - 100', visitor.check);
+        });
     });
 
     suite('cupboard is empty', function () {
